@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mDateDisplay;
     private Button PickDate;
+    private Button mPickTime;
 EditText hrs,mins;
     private int mYear;
     private int mMonth;
@@ -48,13 +49,22 @@ EditText hrs,mins;
 
             }
         });
+        mPickTime = (Button) findViewById(R.id.pickTime);
+
+        // add a click listener to the button
+        mPickTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showDialog(TIME_DIALOG_ID);
+            }
+        });
 
         // get the current date
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
-
+        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
         // display the current date (this method is below)
         updateDisplay();
     }
@@ -75,14 +85,6 @@ EditText hrs,mins;
         }
         return null;
     }
-    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
-            new TimePickerDialog.OnTimeSetListener() {
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    mHour = hourOfDay;
-                    mMinute = minute;
-                    updateDisplay();
-                }
-            };
     // updates the date we display in the TextView
     private void updateDisplay() {
         mDateDisplay.setText(
@@ -90,7 +92,7 @@ EditText hrs,mins;
                         // Month is 0 based so add 1
                         .append(mMonth + 1).append("-")
                         .append(mDay).append("-")
-                        .append(mYear).append(" "));
+                        .append(mYear).append(" ").append(mHour).append(":").append(mMinute));
     }
 
     // the callback received when the user "sets" the date in the dialog
@@ -101,6 +103,15 @@ EditText hrs,mins;
                     mYear = year;
                     mMonth = monthOfYear;
                     mDay = dayOfMonth;
+                    updateDisplay();
+                }
+            };
+
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
+            new TimePickerDialog.OnTimeSetListener() {
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    mHour = hourOfDay;
+                    mMinute = minute;
                     updateDisplay();
                 }
             };
